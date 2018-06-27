@@ -1,6 +1,8 @@
 local Particle = {}
 Particle.__index = Particle
 
+
+
 setmetatable(Particle, { __call = function(_, ...) return Particle.new(...) end })
 
 function Particle.new(pos, v, speed, b)
@@ -33,7 +35,6 @@ end
 
 function Particle:move(dt)
 	-- lifespan countdown
-	print("NEW particle: timer.max = " .. self.timer.max  --[[.." timer.left = " .. self.timer.left]])
 	self.timer.left = self.timer.left - dt
 	if self.timer.left < 0 then return true end
 

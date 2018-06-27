@@ -22,7 +22,7 @@ function PowerUp.new()
 end
 
 function pickRandomType()
-local i = love.math.random(1, 9)
+local i = 1 --love.math.random(1, 9)
 	if i <= 3 then
 		return "green"
 	elseif i <= 6 then
@@ -54,35 +54,35 @@ function PowerUp:execute(ball, player, enemy)	-- remove enemy
 	self.holder = player
 	self.timerMax = 10
 	self.timer = self.timerMax
-	local rand = love.math.random(10)
+	local rand = 8 -- love.math.random(10)
 	if self.type == "green" then
 		if rand <= 7 then
 			self.type = "grow"
-			self.holder:grow(sizeModifier)
+			self.holder:changeSize(1, sizeModifier)
 		else
 			self.type = "speedUp"
-			self.holder:speedUp(speedModifier) 
+			self.holder:changeSpeed(1, speedModifier)
 		end
 	elseif self.type == "red" then
 		if rand <= 7 then
 			self.type = "shrink"
-			self.holder:shrink(sizeModifier)
+			self.holder:changeSize(-1, sizeModifier)
 		else
 			self.type = "slowDown"
-			self.holder:slowDown(speedModifier) 
+			self.holder:changeSpeed(-1, speedModifier)
 		end
 	end
 end
 
 function PowerUp:unexecute()
 	if self.type == "grow" then
-		self.holder:shrink(sizeModifier)
+		self.holder:changeSize(-1, sizeModifier)
 	elseif self.type == "speedUp" then
-		self.holder:slowDown(speedModifier) 
+		self.holder:changeSpeed(-1, speedModifier)
 	elseif self.type == "shrink" then
-		self.holder:grow(sizeModifier)
+		self.holder:changeSize(1, sizeModifier)
 	elseif self.type == "slowDown" then
-		self.holder:speedUp(speedModifier) 
+		self.holder:changeSpeed(1, speedModifier) 
 	end
 end
 

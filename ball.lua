@@ -20,45 +20,46 @@ function Ball.new(x, y, dirPhi)
 end
 
 function Ball:move(dt)
-	
+
 	-- collision w/ playerLeft
-	if self.pos.x - self.r < playerLeft.pos.x + playerLeft.size.x then 
-		if self.pos.x - self.r > playerLeft.pos.x - dt * self.speed and self.pos.y > playerLeft.pos.y - playerLeft.size.y and self.pos.y < playerLeft.pos.y + playerLeft.size.y then
+	if self.pos.x - self.r < playerLeft.pos.x + playerLeft.size.curr.x then
+		if self.pos.x - self.r > playerLeft.pos.x - dt * self.speed and self.pos.y > playerLeft.pos.y - playerLeft.size.curr.y and self.pos.y < playerLeft.pos.y + playerLeft.size.curr.y then
 			currentPhi = math.asin(self.v.y / 1)
-			touchPhi = (self.pos.y - playerLeft.pos.y) / (playerLeft.size.y) * maxPhi
-			
+			touchPhi = (self.pos.y - playerLeft.pos.y) / (playerLeft.size.curr.y) * maxPhi
+
 			phi = median(-1 * maxPhi, currentPhi + touchPhi, maxPhi)
 			self.v.x = math.cos(phi)
 			self.v.y = math.sin(phi)
 
-			-- generate particles 
-			local n = love.math.random(4) + 4
+			-- generate particles
+			local n = love.math.random(4) + 5
 			for i = 1, n, 1 do table.insert(self.particles, Particle(self.pos, self.v, self.speed, true)) end
-		elseif self.pos.x < 0 then 
+		elseif self.pos.x < 0 then
 			return("right")
 		end
 	end
 
 	-- collision w/ playerRight
-	if self.pos.x + self.r > playerRight.pos.x - playerRight.size.x then 
-		if self.pos.x + self.r < playerRight.pos.x + dt * self.speed and self.pos.y > playerRight.pos.y - playerRight.size.y and self.pos.y < playerRight.pos.y + playerRight.size.y then
+	if self.pos.x + self.r > playerRight.pos.x - playerRight.size.curr.x then
+		if self.pos.x + self.r < playerRight.pos.x + dt * self.speed and self.pos.y > playerRight.pos.y - playerRight.size.curr.y and self.pos.y < playerRight.pos.y + playerRight.size.curr.y then
 			currentPhi = math.asin(self.v.y / 1)
-			touchPhi = (self.pos.y - playerRight.pos.y) / (playerRight.size.y) * maxPhi
-			
+			touchPhi = (self.pos.y - playerRight.pos.y) / (playerRight.size.curr.y) * maxPhi
+
 			phi = median(-1 * maxPhi, currentPhi + touchPhi, maxPhi)
 			self.v.x = -1 * math.cos(phi)
 			self.v.y = math.sin(phi)
 
-			-- generate particles 
+			-- generate particles
 			local n = love.math.random(4) + 4
 			for i = 1, n, 1 do table.insert(self.particles, Particle(self.pos, self.v, self.speed, true)) end
 		elseif self.pos.x > canvas.x then
-			return("left")	
+			return("left")
 		end
 	end
-	
+
 	-- collision w/ margin
-	if self.pos.y - self.r < canvas.margin or self.pos.y + self.r > canvas.y - canvas.margin then
+	if self.pos.y - self.r < canvas.margin and self.v.y < 0
+		or self.pos.y + self.r > canvas.y - canvas.margin and self.v.y > 0 then
 		self.v.y = (-1) * self.v.y
 	end
 
@@ -74,7 +75,7 @@ function Ball:move(dt)
 			self.v.x = self.v.x + q
 		else
 			self.v.x = self.v.x - q
-		end		
+		end
 	end
 
 	-- move
@@ -83,11 +84,11 @@ function Ball:move(dt)
 
 	-- add new particles
 	if love.math.random() < particlesProb then table.insert(self.particles, Particle(self.pos, self.v, self.speed, false)) end
-	
+
 	-- move particles
 	for i, p in pairs(self.particles) do
 		if p:move(dt) then table.remove(self.particles, i) end
-	end 
+	end
 end
 
 
